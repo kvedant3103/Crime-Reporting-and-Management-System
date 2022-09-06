@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="/css/newCaseStyles.css">
+    <link rel="stylesheet" href="/css/navbarStyles.css">
+  </head>
+  <body>
+
+  <nav class="navbar">
+    <div class="container">
+        <h2 class="nav-brand">New Case</h2>
+        <a href="/dashboard"><img class="nav-item" src="/homeIcon.svg" alt="home-button"></a>
+    </div>
+  </nav>
+    <div class="container form-container">
+      <form class="newCaseForm" action="/newCase" method="post">
+        <div class="form-group">
+        <% if(!caseDetails){ %>
+          <p class="newCase-instruction">* marked fields are mandatory.</p>
+        <%  } %>
+
+        <%  if(userType==="Admin"){ %>
+          <h5>Case Detail</h5>
+          <div class="row">
+            <div class="col-sm-3 marking">
+                <input class="form-control" type="text" name="caseId" placeholder="Case ID" required autocomplete="off"><span class="required">*</span>
+            </div>
+          <%  if(message){ %>
+            <p class="newCase-instruction"><%= message %></p>
+          <%   } %>
+          </div>
+            <%  } else { %>
+            <hr>
+            <%  } %>
+          <div class="row mt-2">
+          <div class="col-sm-4">
+            <h5>Complaint by</h5>
+            <% if(caseDetails){ %>
+                  <input type="text" class="form-control" name="submittedBy" value="<%=caseDetails.user%>" readonly>
+                <%  if(caseDetails._id!==""){ %>
+                  <input type="text" class="form-control" name="requestId" value="<%=caseDetails._id%>" readonly>
+                <%  } %>
+                  <hr>
+                  <%  } else { %>
+                  <input type="text" class="form-control w-75" name="submittedBy" placeholder="Enter the Name">
+                  <input type="text" class="form-control" name="requestId" value="notApplicable" hidden>
+                  <hr>
+                <% } %>
+            </div>
+            </div>
+
+
+
+          <h5>Case Details</h5>
+          <div class="row">
+            <div class="col-sm marking">
+              <% if(caseDetails.subjectOrTitle) { %>
+                <input class="form-control" type="text" name="caseSubjectOrTitle" value="<%= caseDetails.subjectOrTitle  %>" readonly>
+                <% }else{ %>
+                <input class="form-control" type="text" name="caseSubjectOrTitle" placeholder="Case Subject/Title" required autocomplete="off"><span class="required">*</span>
+                <% } %>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-sm marking">
+              <% if(caseDetails.description){ %>
+                <textarea class="form-control" name="caseDescription" readonly><%=caseDetails.description%></textarea>
+                <% }else{ %>
+                <textarea class="form-control" name="caseDescription" rows="5" placeholder="Case Description" required autocomplete="off"></textarea><span class="required">*</span>
+              <%}%>
+            </div>
+          </div>
+          <div class="row top-margin">
+            <div class="col-sm-6">
+              <% if(caseDetails.victims){ %>
+                <input class="form-control" type="text" name="victims" placeholder="Victim(s)" value="<%= caseDetails.victims %>">
+              <% } else { %>
+                <input class="form-control" type="text" name="victims" placeholder="Victim(s)" autocomplete="off">
+                <label>Note: Format - FirstName_LastName,FirstName_LastName</label>
+                <% } %>
+              </div>
+          </div>
+          <div class="row top-margin">
+            <div class="col-sm-6">
+              <% if(caseDetails.weaponORtool){ %>
+                <input class="form-control" type="text" name="weaponORtool" placeholder="Weapon(s)/Tools(s) involved" value="<%= caseDetails.weaponORtool %>">
+              <% }else{ %>
+                <input class="form-control" type="text" name="weaponORtool" placeholder="Weapon(s)/Tools(s) involved" autocomplete="off">
+                <label>Note: Format - weapon/tool1,weapon/tool2</label>
+              <%  } %>
+            </div>
+
+          </div>
+          <div class="row top-margin">
+            <div class="col-sm-2 marking">
+              <% if(caseDetails.time){ %>
+                <input class="form-control" type="text" name="time" value="<%= caseDetails.time %>" autocomplete="off" readonly>
+             <%  }else{ %>
+                <input class="form-control" type="text" name="time" placeholder="Time" autocomplete="off">
+              <%  } %>
+            </div>
+            <div class="col-sm caseDate marking">
+                <% if(caseDetails.crimeCommitedOn){ %>
+                    <input class="form-control dateInput w-25" type="date" name="crimeCommitedOn" required><span class="required">*</span>
+                    <label>Select Date for - <%=caseDetails.crimeCommitedOn%></label>
+              <%  }else{ %>
+                    <input class="form-control dateInput w-25" type="date" name="crimeCommitedOn">
+              <%  } %>
+            </div>
+          </div>
+
+          <hr>
+
+          <h5>Crime Location</h5>
+
+              <div class="row">
+                  <div class="col-sm">
+                    <% if(caseDetails.location){ %>
+                      <input class="form-control" type="text" name="saddress" value="<%= caseDetails.location.saddress %>">
+                      <%  }else{ %>
+                        <input class="form-control" type="text" name="saddress" placeholder="Location">
+                    <%  } %>
+                  </div>
+                  <div class="col-sm">
+                    <% if(caseDetails.location){ %>
+                      <input class="form-control" type="text" name="city" value="<%= caseDetails.location.city %>" readonly>
+                      <%  }else{ %>
+                        <input class="form-control" type="text" name="city" placeholder="City">
+                    <%  } %>
+                  </div>
+                  <div class="col-sm">
+                  <% if(caseDetails.location){ %>
+                    <input class="form-control" type="text" name="state" value="<%= caseDetails.location.state %>" readonly>
+                    <%  }else{ %>
+                      <input class="form-control" type="text" name="state" placeholder="State">
+                  <%  } %>
+                </div>
+              </div>
+
+              <hr>
+
+            <h5>Witness</h5>
+            <div class="row">
+                <div class="col-sm">
+                  <% if(caseDetails.witness){ %>
+                    <input class="form-control" type="text" name="witness" value="<%=caseDetails.witness%>" placeholder="(if any) Name(s) of witness, separated by ','.">
+                    <%  }else{ %>
+                    <input class="form-control" type="text" name="witness" placeholder="(if any) Name(s) of witness, separated by ','.">
+                  <%  } %>
+                </div>
+            </div>
+
+          <hr>
+
+          <%  if(userType==="Admin"){ %>
+          <h5>Select if information about Suspect/Criminal available</h5>
+          <br>
+          <div class="form-group">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radio" id="inlineRadio1" value="suspect">
+              <label class="form-check-label" for="inlineRadio1">Suspect</label>
+            </div>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="radio" id="inlineRadio2" value="criminal">
+              <label class="form-check-label" for="inlineRadio2">Criminal</label>
+            </div>
+          </div>
+          <% } %>
+
+          <hr>
+
+          <div class="submitButton">
+              <button type="submit" class="btn btn-dark" name="button">Register</button>
+          </div>
+
+      </div>
+    </form>
+    </div>
+  </body>
+  </html>
